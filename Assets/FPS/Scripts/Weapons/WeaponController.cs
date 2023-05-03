@@ -25,14 +25,14 @@ namespace FPS.Gameplay
 
         public GameObject owner { get; set; }
 
-        public GameObject SourcePrefab { get; set; }
+        public GameObject sourcePrefab { get; set; }
 
-        private AudioSource audioSource;
+        private AudioSource m_audioSource;
 
         // Start is called before the first frame update
         void Start()
         {
-            audioSource = GetComponent<AudioSource>();
+            m_audioSource = GetComponent<AudioSource>();
         }
 
         // Update is called once per frame
@@ -61,7 +61,12 @@ namespace FPS.Gameplay
 
         public virtual void Fire()
         {
-            audioSource.PlayOneShot(fireSound);
+            m_audioSource.PlayOneShot(fireSound);
+        }
+
+        public void OnDestroy()
+        {
+            Destroy(subWeapon);
         }
     }
 

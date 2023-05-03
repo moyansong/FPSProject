@@ -7,9 +7,9 @@ namespace FPS.UI
 {
     public class CommodityListView : View
     {
-        private StoreView storeView;
+        private StoreView m_storeView;
 
-        private AudioSource audioSource;
+        private AudioSource m_audioSource;
 
         [Header("Parameters")]
         public GameObject storeUI;
@@ -26,8 +26,8 @@ namespace FPS.UI
         protected override void Start()
         {
             base.Start();
-            storeView = storeUI.GetComponent<StoreView>();
-            audioSource = storeUI.GetComponent<AudioSource>();
+            m_storeView = storeUI.GetComponent<StoreView>();
+            m_audioSource = storeUI.GetComponent<AudioSource>();
             activeList.SetActive(true);
         }
 
@@ -40,8 +40,8 @@ namespace FPS.UI
         public void CommodityButtonOnClick(int ID)
         {
             Debug.Log("选择商品，显示商品详细信息");
-            audioSource.PlayOneShot(clickSound);
-            storeView.SetCommodityDetailVisibility(ID, true);
+            m_audioSource.PlayOneShot(clickSound);
+            m_storeView.SetCommodityDetailVisibility(ID, true);
         }
 
         public void ShowList(GameObject newActiveList)

@@ -1,0 +1,36 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace FPS
+{
+    public class GameConstants
+    {
+        // all the constant string used across the game
+        public const string k_AxisNameVertical = "Vertical";
+        public const string k_AxisNameHorizontal = "Horizontal";
+        public const string k_MouseAxisNameVertical = "Mouse Y";
+        public const string k_MouseAxisNameHorizontal = "Mouse X";
+        public const string k_AxisNameJoystickLookVertical = "Look Y";
+        public const string k_AxisNameJoystickLookHorizontal = "Look X";
+
+        public const string k_ButtonNameFire1 = "Fire1";
+        public const string k_ButtonNameFire2 = "Fire2";
+        public const string k_ButtonNameFire3 = "Fire3";
+
+        public const string k_ButtonNameAim = "Aim";
+        public const string k_ButtonNameRun = "Run";
+        public const string k_ButtonNameJump = "Jump";
+        public const string k_ButtonNameCrouch = "Crouch";
+
+        public const string k_ButtonNameGamepadFire = "Gamepad Fire";
+        public const string k_ButtonNameGamepadAim = "Gamepad Aim";
+        public const string k_ButtonNameSwitchWeapon = "Mouse ScrollWheel";
+        public const string k_ButtonNameGamepadSwitchWeapon = "Gamepad Switch";
+        public const string k_ButtonNameNextWeapon = "NextWeapon";
+        public const string k_ButtonNamePauseMenu = "Pause Menu";
+        public const string k_ButtonNameSubmit = "Submit";
+        public const string k_ButtonNameCancel = "Cancel";
+        public const string k_ButtonReload = "Reload";
+    }
+}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -10,16 +11,18 @@ namespace FPS.Gameplay
     public class WeaponManager : MonoBehaviour
     {
 
-        private int weaponIndex = 0;// 当前武器在weapons中的下标
-        private List<GameObject> weapons = new List<GameObject>();// 所有武器
-        private List<WeaponController> weaponControllers = new List<WeaponController>();// 所有武器的控制器
+        private int m_weaponIndex = 0;// 当前武器在weapons中的下标
+        private List<GameObject> m_weapons = new List<GameObject>();// 所有武器
+        private List<WeaponController> m_weaponControllers = new List<WeaponController>();// 所有武器的控制器
+
+        private Action[] fireActions;
 
         // 当前的武器
         public GameObject weapon 
         { 
             get
             {
-                return weaponIndex < weapons.Count ? weapons[weaponIndex] : null;
+                return m_weaponIndex < m_weapons.Count ? m_weapons[m_weaponIndex] : null;
             }
         }
 
@@ -28,7 +31,7 @@ namespace FPS.Gameplay
         {
             get
             {
-                return weaponIndex < weaponControllers.Count ? weaponControllers[weaponIndex] : null;
+                return m_weaponIndex < m_weaponControllers.Count ? m_weaponControllers[m_weaponIndex] : null;
             }
         }
 
@@ -45,7 +48,7 @@ namespace FPS.Gameplay
         {
             get
             {
-                return weapons.Count;
+                return m_weapons.Count;
             }
         }
 
@@ -63,14 +66,14 @@ namespace FPS.Gameplay
         [Tooltip("The weapon holding in the left hand will be placed under this socket")]
         public Transform leftHandSocket;
 
-        private Animator animator;
-        private AudioSource audioSource;
+        private Animator m_fpsAnimator;
+        private AudioSource m_audioSource;
 
         // Start is called before the first frame update
         void Start()
         {
-            animator = GetComponent<Animator>();
-            audioSource = GetComponent<AudioSource>();
+            m_fpsAnimator = GetComponentInChildren<Animator>();
+            m_audioSource = GetComponent<AudioSource>();
 
             foreach (var startingWeapon in startingWeapons)
             {
@@ -103,7 +106,7 @@ namespace FPS.Gameplay
         private void EquipWeapon(int value)
         {
             // Fix me：切换武器应该有CD？
-            if (weapons.Count == 0)
+            if (m_weapons.Count == 0)
             {
                 Debug.Log("当前没有武器");
                 return;
@@ -113,18 +116,18 @@ namespace FPS.Gameplay
             {
                 weaponController.Unequip();
             }
-            weaponIndex = (weaponIndex + value) % weapons.Count;
+            m_weaponIndex = (m_weaponIndex + value) % m_weapons.Count;
             weaponController.Equip();
 
-            animator.SetInteger("WeaponID", weaponID);
-            animator.SetBool("Equipping", true);
+            m_fpsAnimator.SetInteger("WeaponID", weaponID);
+            m_fpsAnimator.SetBool("Equipping", true);
             StartCoroutine(EquipFinish());
         }
 
         IEnumerator EquipFinish()
         {
             yield return new WaitForSeconds(0.25f);
-            animator.SetBool("Equipping", false);
+            m_fpsAnimator.SetBool("Equipping", false);
         }
 
         public void AddWeapon(int weaponID)
@@ -152,9 +155,9 @@ namespace FPS.Gameplay
             
             newWeapon.SetActive(false);
             newWeaponController.owner = gameObject;
-            newWeaponController.SourcePrefab = newWeapon;
-            weapons.Add(newWeaponInstance);
-            weaponControllers.Add(newWeaponController);
+            newWeaponController.sourcePrefab = newWeapon;
+            m_weapons.Add(newWeaponInstance);
+            m_weaponControllers.Add(newWeaponController);
 
             PlayerModel.Instance.AddItem(newWeaponController.weaponID);
         }
@@ -181,14 +184,14 @@ namespace FPS.Gameplay
         // 移除最后一把武器
         public GameObject RemoveWeapon(bool shouldDestroy = true)
         {
-            return RemoveWeaponByIndex(weapons.Count - 1, shouldDestroy);
+            return RemoveWeaponByIndex(m_weapons.Count - 1, shouldDestroy);
         }
 
         public GameObject RemoveWeapon(int weaponID, bool shouldDestroy = true)
         {
-            for (int i = 0; i < weaponControllers.Count; ++i)
+            for (int i = 0; i < m_weaponControllers.Count; ++i)
             {
-                if (weaponControllers[i].weaponID == weaponID)
+                if (m_weaponControllers[i].weaponID == weaponID)
                 {
                     return RemoveWeaponByIndex(i, shouldDestroy);
                 }
@@ -198,9 +201,9 @@ namespace FPS.Gameplay
 
         public GameObject RemoveWeapon(string weaponName, bool shouldDestroy = true)
         {
-            for (int i = 0; i < weaponControllers.Count; ++i)
+            for (int i = 0; i < m_weaponControllers.Count; ++i)
             {
-                if (weaponControllers[i].weaponName == weaponName)
+                if (m_weaponControllers[i].weaponName == weaponName)
                 {
                     return RemoveWeaponByIndex(i, shouldDestroy);
                 }
@@ -217,17 +220,17 @@ namespace FPS.Gameplay
         /// <returns><不销毁武器的情况下会返回武器，否则返回null/returns>
         private GameObject RemoveWeaponByIndex(int index, bool shouldDestroy = true)
         {
-            if (index < 0 || index >= weapons.Count) return null;
+            if (index < 0 || index >= m_weapons.Count) return null;
 
-            GameObject removedWeapon = weapons[index];
-            WeaponController removedWeaponContoller = weaponControllers[index];
+            GameObject removedWeapon = m_weapons[index];
+            WeaponController removedWeaponContoller = m_weaponControllers[index];
 
             PlayerModel.Instance.RemoveItem(removedWeaponContoller.weaponID);
 
-            weapons.RemoveAt(index);
-            weaponControllers.RemoveAt(index);
+            m_weapons.RemoveAt(index);
+            m_weaponControllers.RemoveAt(index);
 
-            if (index == weaponIndex)
+            if (index == m_weaponIndex)
             {
                 EquipWeapon(0);
             }
@@ -245,7 +248,7 @@ namespace FPS.Gameplay
         /// </summary>
         private void Fire()
         {
-            animator.SetTrigger("Fire");
+            m_fpsAnimator.SetTrigger("Fire");
             weaponController.Fire();
         }
 
