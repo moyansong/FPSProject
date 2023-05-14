@@ -1038,8 +1038,6 @@ MonoBehaviour:
   jumpSpeed: 12
   stickToGroundForce: 1
   gravityMultiplier: 3
-  useFovKick: 0
-  useHeadBob: 0
   jumpSound: {fileID: 8300000, guid: 5897aeed9b676024fbb8c694b421a861, type: 3}
   landSound: {fileID: 8300000, guid: 3b09d59f4499d45428baa7a21e954296, type: 3}
   footstepSound: {fileID: 8300000, guid: 42e65e088b3f4374e851b8dbd38f3df9, type: 3}
@@ -1069,6 +1067,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2838324347107457942}
   - component: {fileID: 3181811107821969711}
+  - component: {fileID: 8918109846004008546}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -1104,6 +1103,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 957aecac3082c11489a92b35b49094b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ownerCamera: {fileID: 3225688638904140321}
+  inputHandler: {fileID: 2189868848707308666}
   capacity: 10
   startingWeapons:
   - {fileID: 1098853906711755307, guid: 87bdf4dc59c4a20478b76a34606c606d, type: 3}
@@ -1113,6 +1114,19 @@ MonoBehaviour:
   - {fileID: 2266550626034789035, guid: 1655fbf591a2aca4e8d6e67ad25968a9, type: 3}
   rightHandSocket: {fileID: 697079262926519452}
   leftHandSocket: {fileID: 6557671292279689285}
+--- !u!114 &8918109846004008546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3181811107821969708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39ecac94b0ba79940800088854aa2b83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
 --- !u!1 &3274984838898886251
 GameObject:
   m_ObjectHideFlags: 0

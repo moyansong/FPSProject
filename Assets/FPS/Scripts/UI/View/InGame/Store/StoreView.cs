@@ -20,20 +20,20 @@ namespace FPS.UI
         [Tooltip("Describe the functionality of the commodity")]
         public Text commodityDescriptionText;
 
-        private AudioSource audioSource;
-
         [Header("Effect")]
         [Tooltip("The sound emitted when clicking a normal button")]
         public AudioClip clickSound;
         [Tooltip("The sound emitted when clicking a buy button")]
         public AudioClip buySound;
 
+        protected AudioSource m_AudioSource;
+
         // Start is called before the first frame update
         protected override void Start()
         {
             base.Start();
             commodityDetail.SetActive(false);
-            audioSource = GetComponent<AudioSource>();
+            m_AudioSource = GetComponent<AudioSource>();
         }
 
         // Update is called once per frame
@@ -54,7 +54,7 @@ namespace FPS.UI
 
         public void BuyButtonOnClick()
         {
-            audioSource.PlayOneShot(buySound);
+            m_AudioSource.PlayOneShot(buySound);
         }
     }
 }

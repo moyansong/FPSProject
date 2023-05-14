@@ -9,12 +9,12 @@ namespace FPS.UI
     {
         public bool visibility = false;
 
-        protected Button[] m_buttons;
+        protected Button[] m_Buttons;
 
         // Start is called before the first frame update
         protected virtual void Start()
         {
-            m_buttons = transform.GetComponentsInChildren<Button>(true);
+            m_Buttons = transform.GetComponentsInChildren<Button>(true);
         }
 
         // Update is called once per frame
