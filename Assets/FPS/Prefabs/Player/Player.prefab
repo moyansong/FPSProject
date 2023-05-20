@@ -1104,6 +1104,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ownerCamera: {fileID: 3225688638904140321}
+  owner: {fileID: 3181811107821969708}
+  instigator: {fileID: 3172461873248260259}
   inputHandler: {fileID: 2189868848707308666}
   capacity: 10
   startingWeapons:
@@ -1127,6 +1129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
+  isPlayer: 1
 --- !u!1 &3274984838898886251
 GameObject:
   m_ObjectHideFlags: 0

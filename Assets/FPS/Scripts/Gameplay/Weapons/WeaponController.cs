@@ -4,6 +4,33 @@ using UnityEngine;
 
 namespace FPS.Gameplay
 {
+    [System.Serializable]
+    public struct CrosshairData
+    {
+        [Tooltip("The image that will be used for this weapon's crosshair center")]
+        public Sprite crosshairCenterSprite;
+
+        [Tooltip("The image that will be used for this weapon's crosshair Left")]
+        public Sprite crosshairLeftSprite;
+
+        [Tooltip("The image that will be used for this weapon's crosshair right")]
+        public Sprite crosshairRightSprite;
+        
+        [Tooltip("The image that will be used for this weapon's crosshair top")]
+        public Sprite crosshairTopSprite;
+        
+        [Tooltip("The image that will be used for this weapon's crosshair bottom")]
+        public Sprite crosshairBottomSprite;
+
+        [Tooltip("The color of the crosshair image")]
+        public Color crosshairColor;
+
+        public bool IsVaild()
+        {
+            return crosshairCenterSprite && crosshairLeftSprite && crosshairRightSprite && crosshairTopSprite && crosshairBottomSprite;
+        }
+    }
+
     public class WeaponController : MonoBehaviour
     {
         [Header("Parameters")]
@@ -19,8 +46,12 @@ namespace FPS.Gameplay
         [Tooltip("SubWeapon or DualWeapon")]
         public GameObject subWeapon = null;
 
+        [Tooltip("Default data for the crosshair")]
+        public CrosshairData crosshairData;
 
         public GameObject owner { get; set; }
+
+        public GameObject instigator { get; set; }
 
         public Camera ownerCamera { get; set; }
 

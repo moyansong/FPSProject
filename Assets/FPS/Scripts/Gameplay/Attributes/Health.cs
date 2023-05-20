@@ -23,7 +23,7 @@ namespace FPS.Gameplay
             }
             private set
             {
-                m_Health = Mathf.Clamp(m_Health, 0f, maxHealth);
+                m_Health = Mathf.Clamp(value, 0f, maxHealth);
             }
         }
 
@@ -41,23 +41,33 @@ namespace FPS.Gameplay
         void Start()
         {
             health = maxHealth;
+
+            if (isPlayer)
+            {
+                EventManager.Broadcast(new PlayerHealthChangedEvent(health, health, maxHealth, gameObject));
+            }
         }
 
         // Update is called once per frame
         void Update()
         {
-
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                TakeDamage(new DamageEvent(10f, gameObject, gameObject));
+            }
         }
 
-        public void TakeDamage(float damage, GameObject damageSource)
+        public void TakeDamage(DamageEvent damageEvent)
         {
             float oldHealth = health;
-            health = health - damage;
-            float trueDamage = health - oldHealth;
+            health -= damageEvent.damage;
+            float trueDamage = oldHealth - health;
+
+            Debug.Log($"{gameObject} take {trueDamage} damage from {damageEvent.damageCauser} and {damageEvent.instigator}, oldHealth: {oldHealth}, newHealth: {health}");
 
             if (isPlayer)
             {
-                EventManager.Broadcast(new PlayerHealthChangeEvent(oldHealth, health, damageSource));
+                EventManager.Broadcast(new PlayerHealthChangedEvent(oldHealth, health, maxHealth, damageEvent.damageCauser));
             }
 
             if (isDead)

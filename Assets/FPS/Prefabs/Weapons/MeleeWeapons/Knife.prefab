@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 1412625675947666457}
   - component: {fileID: 427401937346046810}
   - component: {fileID: 7322036880891842872}
-  - component: {fileID: 3335268902668764524}
+  - component: {fileID: 3512229865341594487}
+  - component: {fileID: 6447299081308869889}
   m_Layer: 0
   m_Name: Knife
   m_TagString: Untagged
@@ -33,7 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1412625675947666457
 MeshFilter:
@@ -181,7 +182,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &3335268902668764524
+--- !u!65 &3512229865341594487
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1098853906711755307}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.09570031, y: 0.5492132, z: 0.03635667}
+  m_Center: {x: 0, y: 0.16407458, z: 0.0000000012224509}
+--- !u!114 &6447299081308869889
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -190,11 +204,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 1098853906711755307}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b99e179417314664d8833cc471b9afd8, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e7537c6c4605734c83d0a728c7b5c4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   weaponID: 0
   weaponName: Knife
   isRightHolding: 1
   subWeapon: {fileID: 0}
-  fireSound: {fileID: 8300000, guid: 09ec0a3fd07bebc4da14e641e89c5d16, type: 3}
+  crosshairData:
+    crosshairCenterSprite: {fileID: 0}
+    crosshairLeftSprite: {fileID: 0}
+    crosshairRightSprite: {fileID: 0}
+    crosshairTopSprite: {fileID: 0}
+    crosshairBottomSprite: {fileID: 0}
+    crosshairColor: {r: 0, g: 0, b: 0, a: 0}
+  lightStrikeDamage: 50
+  heavyStrikeDamage: 100

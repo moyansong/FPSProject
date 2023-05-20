@@ -1,7 +1,9 @@
+using FPS.Game;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using UnityEditor.Build;
 using UnityEngine;
 
 
@@ -11,6 +13,12 @@ namespace FPS.Gameplay
     public class WeaponManager : MonoBehaviour
     {
         [Header("References")]
+        [Tooltip("Usually the character")]
+        public GameObject owner;
+
+        [Tooltip("Usually the player")]
+        public GameObject instigator;
+
         [Tooltip("Usually the main camera")]
         public Camera ownerCamera;
 
@@ -30,7 +38,7 @@ namespace FPS.Gameplay
         [Tooltip("The weapon holding in the left hand will be placed under this socket")]
         public Transform leftHandSocket;
 
-        private int m_WeaponIndex = 0;// 当前武器在weapons中的下标
+        private int m_WeaponIndex = -1;// 当前武器在weapons中的下标
         private List<GameObject> m_Weapons = new List<GameObject>();// 所有武器
         private List<WeaponController> m_WeaponControllers = new List<WeaponController>();// 所有武器的控制器
 
@@ -39,7 +47,7 @@ namespace FPS.Gameplay
         { 
             get
             {
-                return m_WeaponIndex < m_Weapons.Count ? m_Weapons[m_WeaponIndex] : null;
+                return m_WeaponIndex >= 0 && m_WeaponIndex < m_Weapons.Count ? m_Weapons[m_WeaponIndex] : null;
             }
         }
 
@@ -48,7 +56,7 @@ namespace FPS.Gameplay
         {
             get
             {
-                return m_WeaponIndex < m_WeaponControllers.Count ? m_WeaponControllers[m_WeaponIndex] : null;
+                return m_WeaponIndex >= 0 && m_WeaponIndex < m_WeaponControllers.Count ? m_WeaponControllers[m_WeaponIndex] : null;
             }
         }
 
@@ -82,7 +90,7 @@ namespace FPS.Gameplay
             {
                 AddWeapon(startingWeapon);
             }
-            EquipWeapon(0); 
+            EquipWeapon(1); 
         }
 
         // Update is called once per frame
@@ -128,9 +136,11 @@ namespace FPS.Gameplay
                 return;
             }
 
+            WeaponController oldWeaponController = null;
             if (weaponController != null)
             {
                 weaponController.Unequip();
+                oldWeaponController= weaponController;
             }
             m_WeaponIndex = (m_WeaponIndex + value) % m_Weapons.Count;
             if (m_WeaponIndex < 0) m_WeaponIndex = m_Weapons.Count - 1;
@@ -139,6 +149,8 @@ namespace FPS.Gameplay
             m_fpsAnimator.SetInteger("WeaponID", weaponID);
             m_fpsAnimator.SetBool("Equipping", true);
             StartCoroutine(EquipFinish());
+
+            EventManager.Broadcast(new WeaponChangedEvent(oldWeaponController, weaponController));
         }
 
         private IEnumerator EquipFinish()
@@ -177,7 +189,8 @@ namespace FPS.Gameplay
             AttachWeapon(newWeaponInstance, newWeaponController);
             
             newWeapon.SetActive(false);
-            newWeaponController.owner = gameObject;
+            newWeaponController.owner = owner != null ? owner : gameObject;
+            newWeaponController.instigator = instigator != null ? instigator : owner;
             newWeaponController.ownerCamera = ownerCamera;
             newWeaponController.sourcePrefab = newWeapon;
             m_Weapons.Add(newWeaponInstance);
@@ -272,7 +285,8 @@ namespace FPS.Gameplay
         /// </summary>
         private void Fire1()
         {
-            m_fpsAnimator.SetTrigger("Fire");
+            // Fix me : 每个类型的武器有独有的动画控制器
+            m_fpsAnimator.SetTrigger("Fire"); 
             weaponController.Fire1();
         }
 

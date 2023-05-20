@@ -53,6 +53,7 @@ namespace FPS.Gameplay
                 GameObject projectileInstance = GameObject.Instantiate(projectile);
                 ProjectileController controller = projectileInstance.GetComponent<ProjectileController>();
                 controller.owner = owner;
+                controller.instigator = instigator;
                 return controller;
             }
         }
@@ -115,7 +116,7 @@ namespace FPS.Gameplay
 
         private void ShootEffect()
         {
-            m_AudioSource.PlayOneShot(shootSound);
+            //m_AudioSource.PlayOneShot(shootSound);
             m_MuzzleFlash.SetActive(true);
             StartCoroutine(DeactiveMuzzleFlash());
         }

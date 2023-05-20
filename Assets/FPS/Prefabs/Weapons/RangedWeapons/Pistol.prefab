@@ -234,6 +234,13 @@ MonoBehaviour:
   weaponName: Pistol
   isRightHolding: 1
   subWeapon: {fileID: 0}
+  crosshairData:
+    crosshairCenterSprite: {fileID: 21300000, guid: 270ab1e7311ff6a4aba554f825bcd6ee, type: 3}
+    crosshairLeftSprite: {fileID: 21300000, guid: 322fe7fafb84f4e49affe24114911801, type: 3}
+    crosshairRightSprite: {fileID: 21300000, guid: 322fe7fafb84f4e49affe24114911801, type: 3}
+    crosshairTopSprite: {fileID: 21300000, guid: 9c752a8ef66f9b74b8e8bb3b7a733cfb, type: 3}
+    crosshairBottomSprite: {fileID: 21300000, guid: 9c752a8ef66f9b74b8e8bb3b7a733cfb, type: 3}
+    crosshairColor: {r: 0.5, g: 0, b: 0, a: 1}
   muzzle: {fileID: 5019535398137997577}
   shootType: 1
   shootInterval: 0.5

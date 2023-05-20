@@ -1,3 +1,4 @@
+using FPS.Game;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -34,6 +35,8 @@ namespace FPS.Gameplay
         public bool isTigger = true;
   
         public GameObject owner { get; set; }
+
+        public GameObject instigator { get; set; }
 
         public WeaponController weaponController { get; set; }
       
@@ -190,32 +193,36 @@ namespace FPS.Gameplay
 
         }
 
-        private void OnCollisionEnter(Collision collision)
+        private void OnCollisionEnter(Collision collider)
         {
 
         }
 
-        private void OnTriggerEnter(Collider collision)
+        private void OnTriggerEnter(Collider collider)
         {
-            if (collision.GetComponent<Collider>() != null)
-            {
-                //Debug.Log($"{collision.GetComponent<Collider>().ToString()}");
-            }
-            else
-            {
-                //Debug.Log("fuck");
-            }
+            ApplyDamage(collider, damage);
+            Destroy(gameObject);
         }
 
-        private void OnTriggerStay(Collider collision)
+        private void OnTriggerStay(Collider collider)
         {
             // 穿过物体时，衰减子弹速度
 
         }
 
-        private void OnTriggerExit(Collider collision)
+        private void OnTriggerExit(Collider collider)
         {
 
+        }
+
+        private void ApplyDamage(Collider collider, float damageAmount)
+        {
+            Health health = collider.GetComponent<Health>();
+            if (health != null)
+            {
+                DamageEvent damageEvent = new DamageEvent(damageAmount, owner, instigator);
+                health.TakeDamage(damageEvent);
+            }
         }
     }
 }
