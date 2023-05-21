@@ -90,7 +90,7 @@ namespace FPS.Gameplay
             {
                 AddWeapon(startingWeapon);
             }
-            EquipWeapon(1); 
+            ChangeWeapon(1); 
         }
 
         // Update is called once per frame
@@ -98,7 +98,7 @@ namespace FPS.Gameplay
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
-                EquipWeapon(-1);
+                ChangeWeapon(-1);
             }
             if (inputHandler.GetFireInputHeld())
             {
@@ -127,7 +127,7 @@ namespace FPS.Gameplay
         /// 切换到下value个武器
         /// </summary>
         /// <param name="value"></param>
-        private void EquipWeapon(int value)
+        private void ChangeWeapon(int value = 1)
         {
             // Fix me：切换武器应该有CD？
             if (m_Weapons.Count == 0)
@@ -269,7 +269,7 @@ namespace FPS.Gameplay
 
             if (index == m_WeaponIndex)
             {
-                EquipWeapon(0);
+                ChangeWeapon(0);
             }
 
             if (shouldDestroy)
@@ -285,9 +285,10 @@ namespace FPS.Gameplay
         /// </summary>
         private void Fire1()
         {
-            // Fix me : 每个类型的武器有独有的动画控制器
-            m_fpsAnimator.SetTrigger("Fire"); 
-            weaponController.Fire1();
+            if (weaponController.Fire1())
+            {
+                m_fpsAnimator.SetTrigger("Fire");
+            }
         }
 
         private void Reload()

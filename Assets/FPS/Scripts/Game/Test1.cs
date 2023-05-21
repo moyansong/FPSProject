@@ -30,7 +30,7 @@ public class Test1 : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
-            m_Rigidbody.transform.LookAt(new Vector3(457.18f, 28.31f, 159.77f));
+            
         }
     }
 }

@@ -18,6 +18,9 @@ namespace FPS.Gameplay
         [Tooltip("LifeTime of the projectile")]
         public float maxLifeTime = 5f;
 
+        [Tooltip("If it is true, it means that the projectile will be destroyed after stopping, otherwise it will hang on the person")]
+        public bool shouldDestory = true;
+
         [Header("Movement")]
         [Tooltip("Speed of the projectile (m/s)")]
         public float speed = 500f;
@@ -28,12 +31,13 @@ namespace FPS.Gameplay
         [Tooltip("The projectile might penetrate something")]
         public float penetrationPower = 40f;
 
-        [Tooltip("If it is true, it means that the projectile will be destroyed after stopping, otherwise it will hang on the person")]
-        public bool shouldDestory = true;
-
         [Tooltip("Will set the isTrigger of the collider to the same value")]
         public bool isTigger = true;
-  
+
+        [Header("Effect")]
+        [Tooltip("Hitting objects with different physical materials will produce different effects")]
+        public Dictionary<PhysicMaterial, GameObject> impactEffects = new Dictionary<PhysicMaterial, GameObject>();
+
         public GameObject owner { get; set; }
 
         public GameObject instigator { get; set; }
@@ -193,27 +197,28 @@ namespace FPS.Gameplay
 
         }
 
-        private void OnCollisionEnter(Collision collider)
-        {
+        //private void OnCollisionEnter(Collision collider)
+        //{
 
-        }
+        //}
 
         private void OnTriggerEnter(Collider collider)
         {
             ApplyDamage(collider, damage);
-            Destroy(gameObject);
+            ImpactEffect(collider);
+            Destroy(gameObject, 0.2f);
         }
 
-        private void OnTriggerStay(Collider collider)
-        {
-            // 穿过物体时，衰减子弹速度
+        //private void OnTriggerStay(Collider collider)
+        //{
+        //    // 穿过物体时，衰减子弹速度
 
-        }
+        //}
 
-        private void OnTriggerExit(Collider collider)
-        {
+        //private void OnTriggerExit(Collider collider)
+        //{
 
-        }
+        //}
 
         private void ApplyDamage(Collider collider, float damageAmount)
         {
@@ -222,6 +227,15 @@ namespace FPS.Gameplay
             {
                 DamageEvent damageEvent = new DamageEvent(damageAmount, owner, instigator);
                 health.TakeDamage(damageEvent);
+            }
+        }
+
+        private void ImpactEffect(Collider collider)
+        {
+            GameObject impact = null;
+            if (impactEffects.TryGetValue(collider.material, out impact))
+            {
+                GameObject.Instantiate(impact, gameObject.transform);
             }
         }
     }

@@ -89,9 +89,9 @@ namespace FPS.Gameplay
             }
         }
 
-        public virtual void Fire1()
+        public virtual bool Fire1()
         {
-            
+            return true;
         }
 
         public virtual void Reload()

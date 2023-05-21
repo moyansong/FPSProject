@@ -9,12 +9,12 @@ namespace FPS.Gameplay
     [RequireComponent(typeof(Collider))]
     public class MeleeWeaponController : WeaponController
     {
-        [Header("Weapon Parameters")]
+        [Header("Strike")]
         [Tooltip("Damage of light strike")]
         public float lightStrikeDamage = 50f;
 
         [Tooltip("The interval between two light strike, unit(s)")]
-        public float lightStrikeInterval = 0.5f;
+        public float lightStrikeInterval = 1f;
 
         [Tooltip("Damage of heavy strike")]
         public float heavyStrikeDamage = 100f;
@@ -22,51 +22,78 @@ namespace FPS.Gameplay
         [Tooltip("The interval between two heavy strike, unit(s)")]
         public float heavyStrikeInterval = 1f;
 
+        [Header("MeleeWeapon Parameters")]
+        [Tooltip("Will not collide with these colliders")]
+        public HashSet<Collider> ignoreColliders = new HashSet<Collider>();
+
+        public float damage { get; set; }
+
         private Collider m_Collider;
 
-        private float m_damage;
-
-        private float m_lastStrikeTime = -10f;
+        private float m_LastStrikeTime = -10f;
 
         // Start is called before the first frame update
         protected override void Start()
         {
             base.Start();
             m_Collider = GetComponent<Collider>();
+            m_Collider.enabled = false;
         }
 
         // Update is called once per frame
         void Update()
         {
-
+            if (m_Collider.enabled)
+            {
+                //Debug.Log("Enabled");
+            }
         }
  
-        public override void Fire1()
+        public override bool Fire1()
         {
-            base.Fire1(); 
-            LightStrike();
+            return base.Fire1() && LightStrike();
         }
 
         private bool CanLightStrike()
         {
-            return Time.time - m_lastStrikeTime >= lightStrikeInterval;
+            return Time.time - m_LastStrikeTime >= lightStrikeInterval;
         }
 
-        private void LightStrike()
+        private bool LightStrike()
         {
-            if (!CanLightStrike()) return;
+            if (!CanLightStrike()) return false;
+            
+            damage = lightStrikeDamage; 
+            m_LastStrikeTime = Time.time;
+            m_Collider.enabled = true;
+            StartCoroutine("StrikeFinished", lightStrikeInterval);
 
-            m_damage = lightStrikeDamage; 
+            return true;
         }
 
-        private void HeavyStrike()
+        private bool HeavyStrike()
         {
-            m_damage = heavyStrikeDamage;
+            damage = heavyStrikeDamage;
+            m_LastStrikeTime = Time.time;
+            m_Collider.enabled = true;
+            StartCoroutine("StrikeFinished", heavyStrikeInterval);
+
+            return true;
+        }
+
+        private IEnumerator StrikeFinished(float strikeInterval)
+        {
+            yield return new WaitForSeconds(strikeInterval);
+            m_Collider.enabled = false;
+            ignoreColliders.Clear();
         }
 
         private void OnTriggerEnter(Collider collider)
         {
-            ApplyDamage(collider, m_damage);
+            if (ignoreColliders.Contains(collider)) return;
+
+            ignoreColliders.Add(collider);
+            ApplyDamage(collider, damage);
         }
 
         private void ApplyDamage(Collider collider, float damageAmount)

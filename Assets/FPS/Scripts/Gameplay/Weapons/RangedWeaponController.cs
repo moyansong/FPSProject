@@ -13,7 +13,7 @@ namespace FPS.Gameplay
 
     public class RangedWeaponController : WeaponController
     {
-        [Header("Weapon Parameters")]
+        [Header("RangedWeapon Parameters")]
         [Tooltip("Muzzle of the weapon, where the projectiles are shot")]
         public GameObject muzzle;
 
@@ -26,7 +26,7 @@ namespace FPS.Gameplay
         [Tooltip("The farthest distance a projectile can fly, unit(m)")]
         public float range = 1000f;
 
-        [Header("Ammo Parameters")]
+        [Header("Ammo")]
         [Tooltip("Current ammo")]
         public int ammo = 10;
 
@@ -75,10 +75,9 @@ namespace FPS.Gameplay
 
         }
 
-        public override void Fire1()
+        public override bool Fire1()
         {
-            base.Fire1(); 
-            Shoot();
+            return base.Fire1() && Shoot(); 
         }
 
         protected bool CanShoot()
@@ -86,9 +85,9 @@ namespace FPS.Gameplay
             return ammo >= ammoCostPerShoot && Time.time - m_LastShootTime >= shootInterval;
         }
 
-        protected void Shoot()
+        protected bool Shoot()
         {
-            if (!CanShoot()) return;
+            if (!CanShoot()) return false;
 
             m_LastShootTime = Time.time;
             ammo -= ammoCostPerShoot;
@@ -112,6 +111,8 @@ namespace FPS.Gameplay
             {
                 Debug.Log("Did not hit");
             }
+
+            return true;
         }
 
         private void ShootEffect()
