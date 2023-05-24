@@ -15,6 +15,8 @@ namespace FPS.Gameplay
 
         public bool isPlayer = true;
 
+        public UnityAction<DamageEvent> OnDamaged;
+
         public float health
         {
             get
@@ -64,6 +66,8 @@ namespace FPS.Gameplay
             float trueDamage = oldHealth - health;
 
             Debug.Log($"{gameObject} take {trueDamage} damage from {damageEvent.damageCauser} and {damageEvent.instigator}, oldHealth: {oldHealth}, newHealth: {health}");
+
+            OnDamaged?.Invoke(damageEvent);// Action可能没有初始化
 
             if (isPlayer)
             {

@@ -864,6 +864,7 @@ GameObject:
   - component: {fileID: 2189868848707308666}
   - component: {fileID: 8684068064019999730}
   - component: {fileID: 1106522774200844229}
+  - component: {fileID: 6902083190866057423}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1057,6 +1058,19 @@ MonoBehaviour:
   playerCamera: {fileID: 3225688638904140321}
   audioSource: {fileID: 3172461873248260258}
   character: {fileID: 3181811107821969708}
+--- !u!114 &6902083190866057423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3172461873248260259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4de9b8f9ab29d64097225f5dfbf1194, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterType: 0
 --- !u!1 &3181811107821969708
 GameObject:
   m_ObjectHideFlags: 0
@@ -1103,9 +1117,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 957aecac3082c11489a92b35b49094b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ownerCamera: {fileID: 3225688638904140321}
   owner: {fileID: 3181811107821969708}
   instigator: {fileID: 3172461873248260259}
+  ownerCamera: {fileID: 3225688638904140321}
   inputHandler: {fileID: 2189868848707308666}
   capacity: 10
   startingWeapons:
