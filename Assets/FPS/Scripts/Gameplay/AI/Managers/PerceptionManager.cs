@@ -17,7 +17,7 @@ namespace FPS.Gameplay.AI
 
         private TargetInfo m_TargetInfo = new();
 
-        private TargetInfo m_LastTargetInfo = new();
+        //private TargetInfo m_LastTargetInfo = new();
 
         private HashSet<TargetInfo> m_TargetInfoHash = new();
 
@@ -72,8 +72,7 @@ namespace FPS.Gameplay.AI
 
         private bool IsVaildTarget(TargetInfo targetInfo)
         {
-            return targetInfo.target != null && 
-                   targetInfo.perception != null;
+            return targetInfo.IsVaild();
         }
 
     }

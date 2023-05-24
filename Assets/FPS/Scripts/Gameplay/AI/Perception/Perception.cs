@@ -31,29 +31,37 @@ namespace FPS.Gameplay.AI
             return HashCode.Combine(target, perception);
         }
 
-        public static bool operator ==(TargetInfo a, TargetInfo b)
+        public static bool operator==(TargetInfo a, TargetInfo b)
         {
             return a.target == b.target && a.perception == b.perception;
         }
 
-        public static bool operator !=(TargetInfo a, TargetInfo b)
+        public static bool operator!=(TargetInfo a, TargetInfo b)
         {
             return !(a == b);
         }
 
-        public static bool operator >(TargetInfo a, TargetInfo b)
+        public static bool operator>(TargetInfo a, TargetInfo b)
         {
-            if (a.target == null || a.perception == null) return false;
-            if (b.target == null || b.perception == null)
+            bool flagA = a.IsVaild();
+            bool flagB = b.IsVaild();
+            if (!flagA && !flagB)
             {
-                throw new ArgumentException("Both targetInfo are not vaild");
+                throw new ArgumentException($"TargetInfo {a} and {b} are not vaild");
             }
+            if (!flagA) return false;
+            if (!flagB) return true;
             return a.perception.priority > b.perception.priority;
         }
 
-        public static bool operator <(TargetInfo a, TargetInfo b)
+        public static bool operator<(TargetInfo a, TargetInfo b)
         {
             return b > a;
+        }
+
+        public bool IsVaild()
+        {
+            return target != null && perception != null;
         }
     }
 
@@ -79,7 +87,7 @@ namespace FPS.Gameplay.AI
 
         [Header("Perception")]
         [Tooltip("Objects beyond this distance will not be perceived")]
-        public float maxDistance;
+        public float maxRange;
 
         [Tooltip("Priority of perception components on the same game object")]
         public int priority = 0;
@@ -135,9 +143,9 @@ namespace FPS.Gameplay.AI
                    m_TargetingTypeHash.Contains(targetType);
         }
 
-        public virtual GameObject GetHighestPriorityTarget(GameObject target1, GameObject target2)
+        protected bool IsOutOfRange(GameObject target)
         {
-            return null;
+            return Vector3.Distance(target.transform.position, gameObject.transform.position) > maxRange;
         }
     }
 }
