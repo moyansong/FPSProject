@@ -49,6 +49,10 @@ namespace FPS.Gameplay
         [Tooltip("Default data for the crosshair")]
         public CrosshairData crosshairData;
 
+        [Tooltip("Number of layers in the animator")]
+        public int animatorLayer = 0;
+
+
         public GameObject owner { get; set; }
 
         public GameObject instigator { get; set; }
@@ -57,15 +61,20 @@ namespace FPS.Gameplay
 
         public GameObject sourcePrefab { get; set; }
 
+        public Animator animator { get; set; }
+
         protected AudioSource m_AudioSource;
 
-        // Start is called before the first frame update
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             m_AudioSource = GetComponent<AudioSource>();
         }
 
-        // Update is called once per frame
+        protected virtual void Start()
+        {
+            
+        }
+
         void Update()
         {
             

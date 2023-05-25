@@ -349,6 +349,14 @@ MonoBehaviour:
   weaponName: Shotgun
   isRightHolding: 1
   subWeapon: {fileID: 0}
+  crosshairData:
+    crosshairCenterSprite: {fileID: 0}
+    crosshairLeftSprite: {fileID: 0}
+    crosshairRightSprite: {fileID: 0}
+    crosshairTopSprite: {fileID: 0}
+    crosshairBottomSprite: {fileID: 0}
+    crosshairColor: {r: 0, g: 0, b: 0, a: 0}
+  animatorLayer: 4
   muzzle: {fileID: 1328581601926380663}
   shootType: 0
   shootInterval: 0.5

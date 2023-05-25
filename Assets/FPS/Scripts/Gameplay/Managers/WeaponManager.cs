@@ -140,14 +140,15 @@ namespace FPS.Gameplay
             if (weaponController != null)
             {
                 weaponController.Unequip();
-                oldWeaponController= weaponController;
+                oldWeaponController = weaponController;
             }
             m_WeaponIndex = (m_WeaponIndex + value) % m_Weapons.Count;
             if (m_WeaponIndex < 0) m_WeaponIndex = m_Weapons.Count - 1;
             weaponController.Equip();
 
-            m_fpsAnimator.SetInteger("WeaponID", weaponID);
             m_fpsAnimator.SetBool("Equipping", true);
+            m_fpsAnimator.SetLayerWeight(oldWeaponController != null ? oldWeaponController.animatorLayer : 0, 0f);
+            m_fpsAnimator.SetLayerWeight(weaponController.animatorLayer, 1f);
             StartCoroutine(EquipFinish());
 
             EventManager.Broadcast(new WeaponChangedEvent(oldWeaponController, weaponController));
@@ -193,6 +194,8 @@ namespace FPS.Gameplay
             newWeaponController.instigator = instigator != null ? instigator : owner;
             newWeaponController.ownerCamera = ownerCamera;
             newWeaponController.sourcePrefab = newWeapon;
+            newWeaponController.animator = m_fpsAnimator;
+
             m_Weapons.Add(newWeaponInstance);
             m_WeaponControllers.Add(newWeaponController);
 
@@ -284,15 +287,17 @@ namespace FPS.Gameplay
         /// 通常由鼠标左键触发
         /// </summary>
         private void Fire1()
-        {
+        {            
+            // Fix me : 管理当前所处的状态，例如换弹时不能开火
             if (weaponController.Fire1())
             {
-                m_fpsAnimator.SetTrigger("Fire");
+                m_fpsAnimator.SetTrigger("Fire1");
             }
         }
 
         private void Reload()
         {
+            m_fpsAnimator.SetTrigger("Reload");
             weaponController.Reload();
         }
 

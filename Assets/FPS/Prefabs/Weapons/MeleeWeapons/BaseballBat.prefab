@@ -197,4 +197,11 @@ MonoBehaviour:
   weaponName: BaseballBat
   isRightHolding: 1
   subWeapon: {fileID: 0}
-  fireSound: {fileID: 0}
+  crosshairData:
+    crosshairCenterSprite: {fileID: 0}
+    crosshairLeftSprite: {fileID: 0}
+    crosshairRightSprite: {fileID: 0}
+    crosshairTopSprite: {fileID: 0}
+    crosshairBottomSprite: {fileID: 0}
+    crosshairColor: {r: 0, g: 0, b: 0, a: 0}
+  animatorLayer: 1
