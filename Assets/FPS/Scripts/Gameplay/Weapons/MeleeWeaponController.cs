@@ -49,14 +49,18 @@ namespace FPS.Gameplay
             }
         }
  
-        public override bool Fire1()
+        public override bool HandleFire1Input(bool inputDown, bool inputHeld, bool inputUp)
         {
-            return base.Fire1() && LightStrike();
+            if (inputDown)
+            {
+                return LightStrike();
+            }
+            return false;
         }
 
         private bool CanLightStrike()
         {
-            return Time.time - m_LastStrikeTime >= lightStrikeInterval;
+            return isIdle;
         }
 
         private bool LightStrike()
@@ -66,7 +70,8 @@ namespace FPS.Gameplay
             damage = lightStrikeDamage; 
             m_LastStrikeTime = Time.time;
             m_Collider.enabled = true;
-            StartCoroutine("StrikeFinished", lightStrikeInterval);
+            weaponState = WeaponState.Firing;
+            this.StartCoroutine(lightStrikeInterval, StrikeFinished);
 
             return true;
         }
@@ -76,16 +81,17 @@ namespace FPS.Gameplay
             damage = heavyStrikeDamage;
             m_LastStrikeTime = Time.time;
             m_Collider.enabled = true;
-            StartCoroutine("StrikeFinished", heavyStrikeInterval);
+            weaponState = WeaponState.Firing;
+            this.StartCoroutine(heavyStrikeInterval, StrikeFinished);
 
             return true;
         }
 
-        private IEnumerator StrikeFinished(float strikeInterval)
+        private void StrikeFinished()
         {
-            yield return new WaitForSeconds(strikeInterval);
             m_Collider.enabled = false;
             ignoreColliders.Clear();
+            weaponState = WeaponState.Idle;
         }
 
         private void OnTriggerEnter(Collider collider)

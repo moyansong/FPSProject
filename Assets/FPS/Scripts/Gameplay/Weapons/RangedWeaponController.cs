@@ -1,7 +1,11 @@
+using FPS.Game;
+using FPS.Gameplay.AI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace FPS.Gameplay
 {
@@ -9,6 +13,85 @@ namespace FPS.Gameplay
     {
         Manual,
         Automatic,
+    }
+
+    [System.Serializable]
+    public struct Ammo
+    {
+        [Tooltip("Current ammo")]
+        public int ammo;
+
+        [Tooltip("The maximum amount of ammo")]
+        public int maxAmmo;
+
+        [Tooltip("Number of ammo cost pre shoot")]
+        public int ammoCostPerShoot;
+
+        public Ammo(int a)
+        {
+            ammo = a;
+            maxAmmo = a;
+            ammoCostPerShoot = 1;
+        }
+
+        public static Ammo operator+(Ammo a, int b)
+        {
+            a.ammo = Math.Clamp(a.ammo + b, 0, a.maxAmmo);
+            return a;
+        }
+
+        public static Ammo operator-(Ammo a, int b)
+        {
+            return a + (-b);
+        }
+
+        public static Ammo operator--(Ammo a)
+        {
+            return a - a.ammoCostPerShoot;
+        }
+
+        public static bool operator>(Ammo a, int b)
+        {
+            return a.ammo > b;
+        }
+
+        public static bool operator<(Ammo a, int b)
+        {
+            return a.ammo < b;
+        }
+
+        public static bool operator>=(Ammo a, int b)
+        {
+            return a.ammo >= b;
+        }
+
+        public static bool operator<=(Ammo a, int b)
+        {
+            return a.ammo <= b;
+        }
+
+        public static bool operator==(Ammo a, int b)
+        {
+            return a.ammo == b;
+        }
+
+        public static bool operator!=(Ammo a, int b)
+        {
+            return a.ammo != b;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Ammo ammo &&
+                   this.ammo == ammo.ammo &&
+                   maxAmmo == ammo.maxAmmo &&
+                   ammoCostPerShoot == ammo.ammoCostPerShoot;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(ammo, maxAmmo, ammoCostPerShoot);
+        }
     }
 
     public class RangedWeaponController : WeaponController
@@ -27,6 +110,7 @@ namespace FPS.Gameplay
         public float range = 1000f;
 
         [Header("Ammo")]
+        //public Ammo ammo;
         [Tooltip("Current ammo")]
         public int ammo = 10;
 
@@ -35,6 +119,9 @@ namespace FPS.Gameplay
 
         [Tooltip("Number of ammo cost pre shoot")]
         public int ammoCostPerShoot = 1;
+
+        [Tooltip("The time it takes to reload")]
+        public float reloadTime = 1f;
 
         [Tooltip("Projectile")]
         public GameObject projectile;
@@ -61,7 +148,6 @@ namespace FPS.Gameplay
         private GameObject m_MuzzleFlash;
         private float m_LastShootTime;
 
-        // Start is called before the first frame update
         protected override void Start()
         {
             base.Start();
@@ -69,20 +155,34 @@ namespace FPS.Gameplay
             m_LastShootTime = Time.time;
         }
 
-        // Update is called once per frame
         void Update()
         {
-
+            
         }
 
-        public override bool Fire1()
+        public override bool HandleFire1Input(bool inputDown, bool inputHeld, bool inputUp)
         {
-            return base.Fire1() && Shoot(); 
+            switch (shootType)
+            {
+                case WeaponShootType.Manual:
+                    if (inputDown)
+                    {
+                        return Shoot();
+                    }
+                    return false;
+                case WeaponShootType.Automatic:
+                    if (inputHeld)
+                    {
+                        return Shoot();
+                    }
+                    return false;
+            }
+            return false; 
         }
 
         protected bool CanShoot()
         {
-            return ammo >= ammoCostPerShoot && Time.time - m_LastShootTime >= shootInterval;
+            return isIdle && ammo >= ammoCostPerShoot;
         }
 
         protected bool Shoot()
@@ -112,6 +212,8 @@ namespace FPS.Gameplay
                 Debug.Log("Did not hit");
             }
 
+            weaponState = WeaponState.Firing;
+            this.StartCoroutine(shootInterval, () => { weaponState = WeaponState.Idle; });
             return true;
         }
 
@@ -119,15 +221,9 @@ namespace FPS.Gameplay
         {
             //m_AudioSource.PlayOneShot(shootSound);
             m_MuzzleFlash.SetActive(true);
-            StartCoroutine(DeactiveMuzzleFlash());
+            this.StartCoroutine(shootInterval / 2, () => { m_MuzzleFlash.SetActive(false); });
         }
 
-        private IEnumerator DeactiveMuzzleFlash()
-        {
-            yield return new WaitForSeconds(shootInterval / 2);
-            m_MuzzleFlash.SetActive(false);
-        }
-        
         private bool CrosshairRaycast(out RaycastHit hit)
         {
             Vector3 direction = ownerCamera.transform.forward;
@@ -141,9 +237,25 @@ namespace FPS.Gameplay
             );
         }
 
-        public override void Reload()
+        private bool CanReload()
+        {
+            return weaponState == WeaponState.Idle;
+        }
+
+        public override bool Reload()
+        {
+            if (!CanReload()) return false;
+
+            weaponState = WeaponState.Reloading;
+            this.StartCoroutine(reloadTime, ReloadFinish);
+
+            return true;
+        }
+
+        protected void ReloadFinish()
         {
             ammo = maxAmmo;
+            weaponState = WeaponState.Idle;
         }
     }
 }

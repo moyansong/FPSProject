@@ -160,11 +160,12 @@ MonoBehaviour:
   animatorLayer: 3
   muzzle: {fileID: 3122223433298211437}
   shootType: 1
-  shootInterval: 0.2
+  shootInterval: 0.1
   range: 1000
   ammo: 30
   maxAmmo: 30
   ammoCostPerShoot: 1
+  reloadTime: 2
   projectile: {fileID: 100000, guid: 3103e71b8aa95884a8dfae849eaeb0af, type: 3}
   useRealProjectile: 1
   shootSound: {fileID: 0}

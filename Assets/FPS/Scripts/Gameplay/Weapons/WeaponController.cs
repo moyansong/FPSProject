@@ -4,6 +4,14 @@ using UnityEngine;
 
 namespace FPS.Gameplay
 {
+    public enum WeaponState
+    {
+        Idle,
+        Firing,
+        Reloading,
+        Equipping
+    }
+
     [System.Serializable]
     public struct CrosshairData
     {
@@ -63,7 +71,29 @@ namespace FPS.Gameplay
 
         public Animator animator { get; set; }
 
+        public WeaponState weaponState 
+        { 
+            get
+            {
+                return m_WeaponState;
+            }
+            set
+            {
+                m_LastWeaponState = m_WeaponState;
+                m_WeaponState = value;
+                OnWeaponStateChanged();
+            }
+        }
+
+        public bool isIdle => weaponState == WeaponState.Idle;
+        public bool isFiring => weaponState == WeaponState.Firing;
+        public bool isReloading => weaponState == WeaponState.Reloading;
+        public bool isEquipping => weaponState == WeaponState.Equipping;
+
         protected AudioSource m_AudioSource;
+
+        protected WeaponState m_WeaponState = WeaponState.Idle;
+        protected WeaponState m_LastWeaponState = WeaponState.Idle;
 
         protected virtual void Awake()
         {
@@ -98,12 +128,17 @@ namespace FPS.Gameplay
             }
         }
 
-        public virtual bool Fire1()
+        public virtual bool HandleFire1Input(bool inputDown, bool inputHeld, bool inputUp)
+        {
+            return false;
+        }
+
+        public virtual bool Reload()
         {
             return true;
         }
 
-        public virtual void Reload()
+        protected virtual void OnWeaponStateChanged()
         {
 
         }

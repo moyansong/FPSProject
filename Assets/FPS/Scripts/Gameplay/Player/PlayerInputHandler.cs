@@ -47,7 +47,7 @@ namespace FPS.Gameplay
 
         void LateUpdate()
         {
-            m_FireInputWasHeld = GetFireInputHeld();
+            m_FireInputWasHeld = GetFire1InputHeld();
         }
 
         public static void AddInputAction(string inputName, UnityAction action)
@@ -133,7 +133,7 @@ namespace FPS.Gameplay
             return false;
         }
 
-        public bool GetFireInputHeld()
+        public bool GetFire1InputHeld()
         {
             if (CanProcessInput())
             {

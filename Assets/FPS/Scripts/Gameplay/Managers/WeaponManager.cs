@@ -100,10 +100,6 @@ namespace FPS.Gameplay
             {
                 ChangeWeapon(-1);
             }
-            if (inputHandler.GetFireInputHeld())
-            {
-                Fire1();
-            }
             if (inputHandler.GetReloadInputDown())
             {
                 Reload();
@@ -116,6 +112,8 @@ namespace FPS.Gameplay
             {
                 Test();
             }
+
+            HandleFire1Input();
         }
 
         private void Test()
@@ -146,18 +144,10 @@ namespace FPS.Gameplay
             if (m_WeaponIndex < 0) m_WeaponIndex = m_Weapons.Count - 1;
             weaponController.Equip();
 
-            m_fpsAnimator.SetBool("Equipping", true);
             m_fpsAnimator.SetLayerWeight(oldWeaponController != null ? oldWeaponController.animatorLayer : 0, 0f);
             m_fpsAnimator.SetLayerWeight(weaponController.animatorLayer, 1f);
-            StartCoroutine(EquipFinish());
 
             EventManager.Broadcast(new WeaponChangedEvent(oldWeaponController, weaponController));
-        }
-
-        private IEnumerator EquipFinish()
-        {
-            yield return new WaitForSeconds(0.25f);
-            m_fpsAnimator.SetBool("Equipping", false);
         }
 
         public void AddWeapon(int weaponID)
@@ -221,6 +211,7 @@ namespace FPS.Gameplay
                 }
             }
         }
+
         // 移除最后一把武器
         public GameObject RemoveWeapon(bool shouldDestroy = true)
         {
@@ -286,19 +277,20 @@ namespace FPS.Gameplay
         /// <summary>
         /// 通常由鼠标左键触发
         /// </summary>
-        private void Fire1()
+        private void HandleFire1Input()
         {            
-            // Fix me : 管理当前所处的状态，例如换弹时不能开火
-            if (weaponController.Fire1())
+            if (weaponController.HandleFire1Input(inputHandler.GetFire1InputDown(), inputHandler.GetFire1InputHeld(), inputHandler.GetFire1InputUp()))
             {
                 m_fpsAnimator.SetTrigger("Fire1");
             }
         }
 
         private void Reload()
-        {
-            m_fpsAnimator.SetTrigger("Reload");
-            weaponController.Reload();
+        {     
+            if (weaponController.Reload())
+            {
+                m_fpsAnimator.SetTrigger("Reload");
+            }
         }
 
     }
