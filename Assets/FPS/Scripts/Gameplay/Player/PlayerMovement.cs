@@ -1,13 +1,6 @@
 
 using FPS.Game;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityStandardAssets.CrossPlatformInput;
-using UnityStandardAssets.Utility;
 
 namespace FPS.Gameplay
 {

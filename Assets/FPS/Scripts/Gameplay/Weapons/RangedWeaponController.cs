@@ -1,11 +1,6 @@
 using FPS.Game;
-using FPS.Gameplay.AI;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace FPS.Gameplay
 {
@@ -228,7 +223,7 @@ namespace FPS.Gameplay
         {
             Vector3 direction = ownerCamera.transform.forward;
             Vector3 origin = ownerCamera.transform.position + direction * 1;
-            Debug.DrawLine(origin, origin + direction * range, Color.red, 100f);
+            //Debug.DrawLine(origin, origin + direction * range, Color.red, 100f);
             return Physics.Raycast(
                 origin,
                 direction,

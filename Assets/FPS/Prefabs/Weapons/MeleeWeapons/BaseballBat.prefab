@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 5376175509374104623}
   - component: {fileID: 7888323499892474085}
   - component: {fileID: 5381413832202358653}
-  - component: {fileID: 5381413832202358652}
+  - component: {fileID: 6136312325835507394}
+  - component: {fileID: 6681624147367939187}
   m_Layer: 0
   m_Name: BaseballBat
   m_TagString: Untagged
@@ -33,7 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 25.5, y: 83.8, z: -12.7}
 --- !u!33 &5376175509374104623
 MeshFilter:
@@ -181,7 +182,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &5381413832202358652
+--- !u!65 &6136312325835507394
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8536582018133827888}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.16488706, y: 1.0859747, z: 0.1523774}
+  m_Center: {x: -0.0021472054, y: 0.0055018067, z: -0.002110468}
+--- !u!114 &6681624147367939187
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -190,7 +204,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8536582018133827888}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b99e179417314664d8833cc471b9afd8, type: 3}
+  m_Script: {fileID: 11500000, guid: 6e7537c6c4605734c83d0a728c7b5c4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   weaponID: 2
@@ -205,3 +219,7 @@ MonoBehaviour:
     crosshairBottomSprite: {fileID: 0}
     crosshairColor: {r: 0, g: 0, b: 0, a: 0}
   animatorLayer: 1
+  lightStrikeDamage: 50
+  lightStrikeInterval: 1
+  heavyStrikeDamage: 100
+  heavyStrikeInterval: 1

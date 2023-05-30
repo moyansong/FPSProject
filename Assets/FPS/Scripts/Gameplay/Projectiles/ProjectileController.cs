@@ -222,7 +222,7 @@ namespace FPS.Gameplay
 
         private void ApplyDamage(Collider collider, float damageAmount)
         {
-            Health health = collider.GetComponent<Health>();
+            Health health = collider.GetComponentInChildren<Health>();
             if (health != null)
             {
                 DamageEvent damageEvent = new DamageEvent(damageAmount, owner, instigator);
