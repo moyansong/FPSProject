@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Overlays;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,8 +14,10 @@ namespace FPS.Gameplay.AI
         [Header("Movement")]
         public float walkSpeed = 0.15f;
 
-        [Header("Movement")]
         public float followSpeed = 0.15f;
+
+        [Tooltip("The speed at which the enemy rotates")]
+        public float orientationSpeed = 10f;
 
         public ZombieType zombieType => m_ZombieController.zombieType;
 
@@ -68,7 +71,7 @@ namespace FPS.Gameplay.AI
 
         private void UpdateFollowing()
         {
-            //m_NavMeshAgent.SetDestination(target.transform.position);
+            OrientTarget();
             MoveTo(m_ZombieController.testTarget.transform.position);
         }
 
@@ -88,6 +91,9 @@ namespace FPS.Gameplay.AI
                 case ZombieState.Following:
                     OnFollowing();
                     break;
+                case ZombieState.Attacking:
+                    OnAttacking();
+                    break;
                 default:
                     break;
             }
@@ -95,7 +101,7 @@ namespace FPS.Gameplay.AI
 
         private void OnIdle()
         {
-            m_NavMeshAgent.isStopped = true;
+            Stop();
         }
 
         private void OnWalking()
@@ -106,7 +112,7 @@ namespace FPS.Gameplay.AI
 
         private void OnEating()
         {
-            m_NavMeshAgent.isStopped = true;
+            Stop();
         }
 
         private void OnFollowing()
@@ -115,10 +121,30 @@ namespace FPS.Gameplay.AI
             m_NavMeshAgent.speed = followSpeed;
         }
 
-        private void MoveTo(Vector3 destination)
+        private void OnAttacking()
+        {
+            Stop();
+        }
+
+        public void MoveTo(Vector3 destination)
         {
             m_NavMeshAgent.isStopped = false;
             m_NavMeshAgent.SetDestination(destination);
+        }
+
+        private void Stop()
+        {
+            m_NavMeshAgent.isStopped = true;
+        }
+
+        private void OrientTarget()
+        {
+            Vector3 lookDirection = Vector3.ProjectOnPlane(target.transform.position - transform.position, Vector3.up).normalized;
+            if (lookDirection.sqrMagnitude != 0f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * orientationSpeed);
+            }
         }
     }
 }

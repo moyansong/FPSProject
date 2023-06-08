@@ -1124,7 +1124,6 @@ MonoBehaviour:
   capacity: 10
   startingWeapons:
   - {fileID: 1098853906711755307, guid: 87bdf4dc59c4a20478b76a34606c606d, type: 3}
-  - {fileID: 8536582018133827888, guid: ad1c7c9f09cee5940bbc229f8dade211, type: 3}
   - {fileID: 4528556571589838487, guid: 8186291653d73ba45b4235e54a6707a4, type: 3}
   - {fileID: 972554775890872405, guid: f165f9a4621c4e34597e7091643f5af4, type: 3}
   - {fileID: 2266550626034789035, guid: 1655fbf591a2aca4e8d6e67ad25968a9, type: 3}

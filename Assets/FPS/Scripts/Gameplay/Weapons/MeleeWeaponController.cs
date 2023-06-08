@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 namespace FPS.Gameplay
 {
-    [RequireComponent(typeof(Collider))]
     public class MeleeWeaponController : WeaponController
     {
         [Header("Strike")]
@@ -28,27 +28,53 @@ namespace FPS.Gameplay
 
         public float damage { get; set; }
 
-        private Collider m_Collider;
+        private ContinuousRaycastHit m_ContinuousRaycastHit;
 
         private float m_LastStrikeTime = -10f;
+
+        protected override void Awake()
+        {
+            m_ContinuousRaycastHit = GetComponent<ContinuousRaycastHit>();
+        }
 
         // Start is called before the first frame update
         protected override void Start()
         {
             base.Start();
-            m_Collider = GetComponent<Collider>();
-            m_Collider.enabled = false;
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (m_Collider.enabled)
+            
+        }
+
+        private void FixedUpdate()
+        {
+            if (weaponState == WeaponState.Firing)
             {
-                //Debug.Log("Enabled");
+                RaycastHit[] raycastHits = new RaycastHit[5];
+                m_ContinuousRaycastHit.Raycast(raycastHits);
+                foreach (var raycastHit in raycastHits)
+                {
+                    if (raycastHit.collider != null)
+                    {
+                        Debug.Log($"{owner}'s {gameObject} striked {raycastHit.collider.gameObject}");
+                        ApplyDamage(raycastHit.collider, damage);
+                    }
+                    else
+                    {
+                        Debug.Log($"{raycastHit} do not have collider");
+                    }
+                }
             }
         }
- 
+
+        public override float GetFire1Interval()
+        {
+            return lightStrikeInterval;
+        }
+
         public override bool HandleFire1Input(bool inputDown, bool inputHeld, bool inputUp)
         {
             if (inputDown)
@@ -69,7 +95,6 @@ namespace FPS.Gameplay
             
             damage = lightStrikeDamage; 
             m_LastStrikeTime = Time.time;
-            m_Collider.enabled = true;
             weaponState = WeaponState.Firing;
             this.StartCoroutine(lightStrikeInterval, StrikeFinished);
 
@@ -80,7 +105,6 @@ namespace FPS.Gameplay
         {
             damage = heavyStrikeDamage;
             m_LastStrikeTime = Time.time;
-            m_Collider.enabled = true;
             weaponState = WeaponState.Firing;
             this.StartCoroutine(heavyStrikeInterval, StrikeFinished);
 
@@ -89,7 +113,6 @@ namespace FPS.Gameplay
 
         private void StrikeFinished()
         {
-            m_Collider.enabled = false;
             ignoreColliders.Clear();
             weaponState = WeaponState.Idle;
         }

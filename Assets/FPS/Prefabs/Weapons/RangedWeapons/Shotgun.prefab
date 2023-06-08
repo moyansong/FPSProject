@@ -350,12 +350,12 @@ MonoBehaviour:
   isRightHolding: 1
   subWeapon: {fileID: 0}
   crosshairData:
-    crosshairCenterSprite: {fileID: 0}
-    crosshairLeftSprite: {fileID: 0}
-    crosshairRightSprite: {fileID: 0}
-    crosshairTopSprite: {fileID: 0}
-    crosshairBottomSprite: {fileID: 0}
-    crosshairColor: {r: 0, g: 0, b: 0, a: 0}
+    crosshairCenterSprite: {fileID: 21300000, guid: 270ab1e7311ff6a4aba554f825bcd6ee, type: 3}
+    crosshairLeftSprite: {fileID: 21300000, guid: 322fe7fafb84f4e49affe24114911801, type: 3}
+    crosshairRightSprite: {fileID: 21300000, guid: 322fe7fafb84f4e49affe24114911801, type: 3}
+    crosshairTopSprite: {fileID: 21300000, guid: 9c752a8ef66f9b74b8e8bb3b7a733cfb, type: 3}
+    crosshairBottomSprite: {fileID: 21300000, guid: 9c752a8ef66f9b74b8e8bb3b7a733cfb, type: 3}
+    crosshairColor: {r: 0.5, g: 0, b: 0, a: 1}
   animatorLayer: 4
   muzzle: {fileID: 1328581601926380663}
   shootType: 0
@@ -364,6 +364,7 @@ MonoBehaviour:
   ammo: 10
   maxAmmo: 10
   ammoCostPerShoot: 1
+  reloadTime: 1
   projectile: {fileID: 0}
   useRealProjectile: 1
   shootSound: {fileID: 0}

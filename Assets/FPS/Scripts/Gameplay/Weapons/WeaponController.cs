@@ -128,6 +128,11 @@ namespace FPS.Gameplay
             }
         }
 
+        public virtual float GetFire1Interval()
+        {
+            return 0f;
+        }
+
         public virtual bool HandleFire1Input(bool inputDown, bool inputHeld, bool inputUp)
         {
             return false;

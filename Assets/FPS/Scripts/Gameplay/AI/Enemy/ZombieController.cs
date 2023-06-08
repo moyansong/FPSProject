@@ -1,3 +1,5 @@
+using FPS.Game;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,7 +20,8 @@ namespace FPS.Gameplay.AI
         Idle,
         Walking,
         Eating,
-        Following
+        Following,
+        Attacking
     }
 
     [RequireComponent(typeof(Health), typeof(NavMeshAgent), typeof(Animator))]
@@ -30,6 +33,13 @@ namespace FPS.Gameplay.AI
 
         [Tooltip("The starting state of the zombie")]
         public ZombieState startingZombieState;
+
+        [Header("Attack")]
+        [Tooltip("Can attack if the distance from the target is less than this value")]
+        public float attackRange = 1f;
+
+        [Tooltip("Time required to complete an attack")]
+        public float attackDuration = 1.5f;
 
         public GameObject testTarget;
 
@@ -64,6 +74,7 @@ namespace FPS.Gameplay.AI
         private Animator m_Animator;
         private NavMeshAgent m_NavMeshAgent;
         private ZombieMovement m_ZombieMovement;
+        private WeaponController m_WeaponController;
         private PerceptionManager m_PerceptionManager;
 
         private void Awake()
@@ -72,6 +83,11 @@ namespace FPS.Gameplay.AI
             m_Animator = GetComponent<Animator>();
             m_NavMeshAgent = GetComponent<NavMeshAgent>();
             m_ZombieMovement = GetComponent<ZombieMovement>();
+
+            m_WeaponController = GetComponentInChildren<WeaponController>();
+            m_WeaponController.owner = gameObject;
+            m_WeaponController.instigator = gameObject;
+
             m_PerceptionManager = GetComponentInChildren<PerceptionManager>();
             m_PerceptionManager.onPerceivedTarget += OnPerceivedTarget;
 
@@ -92,8 +108,10 @@ namespace FPS.Gameplay.AI
         {
             if (Input.GetKeyDown(KeyCode.H))
             {
-                zombieState = ZombieState.Following;
+                zombieState = ZombieState.Attacking;
+                
             }
+            Attack();
         }
 
         private void OnZombieStateChanged(ZombieState oldState, ZombieState newState)
@@ -105,6 +123,42 @@ namespace FPS.Gameplay.AI
         {
             Debug.Log($"{gameObject}'s {info.perception} perceived target : {info.target}");
             targetInfo = info;
+            zombieState = ZombieState.Following;
+        }
+
+        private void MoveTo(Vector3 destination)
+        {
+            m_ZombieMovement.MoveTo(destination);
+        }
+
+        private bool CanAttack()
+        {
+            return targetInfo.IsVaild() && 
+                   zombieState != ZombieState.Attacking &&
+                   Vector3.Distance(targetInfo.target.transform.position, transform.position) <= attackRange;
+        }
+
+        private void Attack()
+        {
+            if (!CanAttack()) return;
+            
+            zombieState = ZombieState.Attacking;
+            m_WeaponController.HandleFire1Input(true, false, false);
+            this.StartCoroutine(m_WeaponController.GetFire1Interval(), AttackFinish);
+        }
+
+        private void AttackFinish()
+        {
+            if (CanAttack()) return;
+
+            if (targetInfo.IsVaild())
+            {
+                zombieState = ZombieState.Following;
+            }
+            else
+            {
+                zombieState = ZombieState.Idle;
+            }
         }
     }
 }
