@@ -168,7 +168,6 @@ namespace FPS.Gameplay
             WeaponController newWeaponController = newWeaponInstance.GetComponent<WeaponController>();
             if (newWeaponController == null)
             {
-                Debug.Log($"获取{newWeaponInstance.ToString()}的WeaponController失败");
                 Destroy(newWeaponInstance);
                 return;
             }

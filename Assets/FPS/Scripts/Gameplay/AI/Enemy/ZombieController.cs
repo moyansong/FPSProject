@@ -108,8 +108,8 @@ namespace FPS.Gameplay.AI
         {
             if (Input.GetKeyDown(KeyCode.H))
             {
-                zombieState = ZombieState.Attacking;
-                
+                //zombieState = ZombieState.Attacking;
+                Debug.Log($"{zombieState}");
             }
             Attack();
         }

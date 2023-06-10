@@ -14,9 +14,7 @@ namespace FPS.Gameplay
 
         private float m_LastRaycastTime = 0f;
 
-        private HashSet<Collider> m_ignoreColliders = new();
-
-        RaycastHit[] m_RaycastHits = new RaycastHit[60];
+        RaycastHit[] m_RaycastHits = new RaycastHit[50];
 
         // Start is called before the first frame update
         void Start()
@@ -38,12 +36,11 @@ namespace FPS.Gameplay
             }
         }
 
-        public void Raycast(RaycastHit[] results)
+        public int Raycast(RaycastHit[] results)
         {
             if (Time.time - m_LastRaycastTime > Time.fixedDeltaTime * 1.2f)
             {
                 UpdatePosition();
-                m_ignoreColliders.Clear();
             }
             m_LastRaycastTime = Time.time;
 
@@ -57,23 +54,20 @@ namespace FPS.Gameplay
 
                 Ray ray = new Ray(lastTracePosition, newTracePosition - lastTracePosition);          
                 int n = Physics.RaycastNonAlloc(ray, m_RaycastHits, Vector3.Distance(lastTracePosition, newTracePosition));
-
+                
                 for (int j = 0; j < Mathf.Min(n, m_RaycastHits.Length); ++j)
                 {
                     if (index < results.Length)
                     {
-                        if (!m_ignoreColliders.Contains(m_RaycastHits[j].collider))
-                        {
-                            results[index++] = m_RaycastHits[j];
-                            m_ignoreColliders.Add(m_RaycastHits[j].collider);
-                        }
+                        results[index++] = m_RaycastHits[j];
                     }
                     else
                     {
-                        return;
+                        return results.Length;
                     }
                 }
             }
+            return index;
         }
     }
 }

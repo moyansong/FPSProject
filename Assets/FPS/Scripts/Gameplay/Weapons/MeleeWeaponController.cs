@@ -1,4 +1,5 @@
 using FPS.Game;
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
@@ -22,13 +23,11 @@ namespace FPS.Gameplay
         [Tooltip("The interval between two heavy strike, unit(s)")]
         public float heavyStrikeInterval = 1f;
 
-        [Header("MeleeWeapon Parameters")]
-        [Tooltip("Will not collide with these colliders")]
-        public HashSet<Collider> ignoreColliders = new HashSet<Collider>();
-
         public float damage { get; set; }
 
         private ContinuousRaycastHit m_ContinuousRaycastHit;
+
+        private HashSet<Collider> m_IgnoreColliders = new HashSet<Collider>();
 
         private float m_LastStrikeTime = -10f;
 
@@ -49,22 +48,27 @@ namespace FPS.Gameplay
             
         }
 
+        private bool CanHit(Collider collider)
+        {
+            return collider.gameObject != owner &&
+                   collider.gameObject != instigator && 
+                   !m_IgnoreColliders.Contains(collider);
+        }
+
         private void FixedUpdate()
         {
             if (weaponState == WeaponState.Firing)
             {
                 RaycastHit[] raycastHits = new RaycastHit[5];
-                m_ContinuousRaycastHit.Raycast(raycastHits);
-                foreach (var raycastHit in raycastHits)
+                int n = m_ContinuousRaycastHit.Raycast(raycastHits);
+                for (int i = 0; i < Mathf.Min(n, raycastHits.Length); ++i)
                 {
-                    if (raycastHit.collider != null)
+                    Collider hitCollider = raycastHits[i].collider;
+                    if (CanHit(hitCollider))
                     {
-                        Debug.Log($"{owner}'s {gameObject} striked {raycastHit.collider.gameObject}");
-                        ApplyDamage(raycastHit.collider, damage);
-                    }
-                    else
-                    {
-                        Debug.Log($"{raycastHit} do not have collider");
+                        Debug.Log($"{owner}'s {gameObject} striked {hitCollider.gameObject}, collider is {hitCollider}");
+                        m_IgnoreColliders.Add(hitCollider);
+                        ApplyDamage(hitCollider, damage);
                     }
                 }
             }
@@ -113,21 +117,21 @@ namespace FPS.Gameplay
 
         private void StrikeFinished()
         {
-            ignoreColliders.Clear();
+            m_IgnoreColliders.Clear();
             weaponState = WeaponState.Idle;
         }
 
         private void OnTriggerEnter(Collider collider)
         {
-            if (ignoreColliders.Contains(collider)) return;
+            if (m_IgnoreColliders.Contains(collider)) return;
 
-            ignoreColliders.Add(collider);
+            m_IgnoreColliders.Add(collider);
             ApplyDamage(collider, damage);
         }
 
         private void ApplyDamage(Collider collider, float damageAmount)
         {
-            Health health = collider.GetComponent<Health>();
+            Health health = collider.GetComponentInChildren<Health>();
             if (health != null)
             {
                 DamageEvent damageEvent = new DamageEvent(damageAmount, owner, instigator);
